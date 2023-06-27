@@ -21,8 +21,6 @@ public class Main {
             Main.serialPort.openPort();
             System.out.println("Port initialized!");
 
-
-
             Main.serialPort.addDataListener(new SerialPortDataListener() {
                 @Override
                 public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
@@ -54,9 +52,6 @@ public class Main {
         }
 
     }
-
-
-
 
     public static String getReaderNameWithoutCom(String nameWithCom){
         return nameWithCom.substring(0, nameWithCom.length() - 7);
