@@ -7,6 +7,11 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 
 public class Main {
 
+    private static final String VERSION = "v1.0";
+
+    private static final String PROD_URL = "localhost:8081";
+
+    private static final String TEST_URL = "localhost:8081";
     private static final String COM_PORT_READER_NAME = "USB-SERIAL CH340";
     private static SerialPort serialPort = null;
 
