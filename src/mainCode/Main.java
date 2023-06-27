@@ -10,6 +10,9 @@ public class Main {
     private static final String COM_PORT_READER_NAME = "USB-SERIAL CH340";
     private static SerialPort serialPort = null;
 
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+
     public static void main(String[] args){
 
         Main.setSerialPort();
@@ -18,19 +21,30 @@ public class Main {
             Main.serialPort.openPort();
             System.out.println("Port initialized!");
 
+
+
             Main.serialPort.addDataListener(new SerialPortDataListener() {
                 @Override
-                public int getListeningEvents() {
-                    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
-                }
+                public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
                 @Override
                 public void serialEvent(SerialPortEvent event) {
                     if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                         return;
                     byte[] newData = new byte[Main.serialPort.bytesAvailable()];
                     int numRead = Main.serialPort.readBytes(newData, newData.length);
-                    System.out.println("Read " + numRead + " bytes.");
-                    System.out.println("Card info: " + fromByteToChar(newData));
+
+                    String command = fromByteToHex(newData);
+
+                    String id;
+                    if (!command.equals("1B")){
+                        id = onlyIdData(command);
+                        System.out.println(fromHexToAscii(id));
+                    }
+
+                    newData = null;
+                    command = null;
+                    id = null;
+
                 }
             });
 
@@ -40,6 +54,9 @@ public class Main {
         }
 
     }
+
+
+
 
     public static String getReaderNameWithoutCom(String nameWithCom){
         return nameWithCom.substring(0, nameWithCom.length() - 7);
@@ -56,22 +73,26 @@ public class Main {
 
     }
 
-    public static String fromByteToChar(byte[] bytes){
-        String res = "";
-        for (byte b : bytes){
-            res += (char)b;
+    public static String fromByteToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
-        return res;
+        return new String(hexChars);
     }
-    //add to extract only data of id
-    public static byte[] onlyIdData(byte[] bytes){
-        byte[] impData = new byte[bytes.length - 6];
-        int counter = 0;
-        for (int i = 2; i <= bytes.length - 4; i++){
-            impData[counter] = bytes[i];
-            counter++;
+
+    private static String fromHexToAscii(String hexValue) {
+        String ascii = "";
+        for (int i = 0; i < hexValue.length(); i += 2) {
+            ascii += ((char) Integer.parseInt(hexValue.substring(i, i + 2), 16));
         }
-        return impData;
+        return ascii;
+    }
+
+    public static String onlyIdData(String command){
+        return command.substring(2, 22);
     }
 
 
