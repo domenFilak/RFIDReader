@@ -30,19 +30,26 @@ public class Main {
                         return;
                     byte[] newData = new byte[Main.serialPort.bytesAvailable()];
                     int numRead = Main.serialPort.readBytes(newData, newData.length);
+                    char[] hexChars = new char[0];
+                    String ascii = "";
 
-                    String command = fromByteToHex(newData);
+                    String command = fromByteToHex(newData, hexChars);
 
                     String id;
                     if (!command.equals("1B")){
                         id = onlyIdData(command);
-                        System.out.println(fromHexToAscii(id));
+                        System.out.println(fromHexToAscii(id, ascii));
                     }
 
+
+
+
+
                     newData = null;
+                    hexChars = null;
+                    ascii = null;
                     command = null;
                     id = null;
-
                 }
             });
 
@@ -68,18 +75,18 @@ public class Main {
 
     }
 
-    public static String fromByteToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
+    public static String fromByteToHex(byte[] bytes, char[] data) {
+        data = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            data[j * 2] = HEX_ARRAY[v >>> 4];
+            data[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
-        return new String(hexChars);
+        return new String(data);
     }
 
-    private static String fromHexToAscii(String hexValue) {
-        String ascii = "";
+    private static String fromHexToAscii(String hexValue, String ascii) {
+        ascii = "";
         for (int i = 0; i < hexValue.length(); i += 2) {
             ascii += ((char) Integer.parseInt(hexValue.substring(i, i + 2), 16));
         }
