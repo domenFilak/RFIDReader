@@ -6,6 +6,4 @@ public interface UIRfidListener {
 
     public void envChangedListener(final Env env);
 
-    public void addressChangedListener(final String address);
-
 }
