@@ -81,9 +81,10 @@ public class Main {
                 if (!command.equals("1B")){
                     id = onlyIdData(command);
                     Main.id = fromHexToAscii(id, ascii);
+                    String urlLink = "";
                     if (Main.mode == Mode.LOGIN){
                         try {
-                            openLink();
+                            openLink(urlLink);
                         } catch (OpenLinkException e) {
                             throw new RuntimeException(e);
                         }
@@ -91,9 +92,8 @@ public class Main {
                     else if (Main.mode == Mode.SHOW){
                         Main.uiRfid.showId(Main.id);
                     }
-
+                    urlLink = null;
                 }
-
                 newData = null;
                 hexChars = null;
                 ascii = null;
@@ -155,8 +155,9 @@ public class Main {
         return command.substring(2, 22);
     }
 
-    public static void openLink() throws OpenLinkException {
-        String url = String.format("%s%s", Main.url, Main.id);
+    public static void openLink(String url) throws OpenLinkException {
+        url = "";
+        url = String.format("%s%s", Main.url, Main.id);
         try {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
                 Desktop.getDesktop().browse(new URI(url));

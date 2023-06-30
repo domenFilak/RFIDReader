@@ -6,6 +6,7 @@ import mainCode.UIRfidListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,7 +16,7 @@ public class UIRfid extends JFrame {
     private MyPanel myPanel;
     private final String[] OPTIONS = {"Yes", "No"};
 
-    private JLabel versionLabel, currentPortNameLabel;
+    private JLabel versionLabel, currentPortNameLabel, bannerLabel, logAreaLabel;
 
     private JComboBox<Mode> modeCheckBox;
 
@@ -26,13 +27,18 @@ public class UIRfid extends JFrame {
     private JTextArea logArea;
 
     private UIRfidListener uiRfidListener;
+    private JPanel panelDesc, panelOptions;
+    private JScrollPane scrollPane;
+    private final ImageIcon ICON = new ImageIcon(UIRfid.class.getResource("/icon_reader.png"));
 
     public UIRfid(UIRfidListener uiRfidListener){
         this.uiRfidListener = uiRfidListener;
-        this.setTitle("RFIDReader");
+        this.setTitle("RFID Reader");
+        this.setIconImage(ICON.getImage());
         this.setLayout(new BorderLayout());
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        //this.setBackground(new Color(153, 255, 255));
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
                 onExit();
@@ -42,41 +48,67 @@ public class UIRfid extends JFrame {
         this.myPanel = new MyPanel();
         this.getContentPane().add(this.myPanel, BorderLayout.CENTER);
 
+        this.bannerLabel = new JLabel("RFID Reader", SwingConstants.CENTER);
+        this.bannerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+        this.bannerLabel.setBackground(new Color(51, 255, 153));
+        this.bannerLabel.setOpaque(true);
+        this.bannerLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        this.bannerLabel.setBounds(0, 0, 500, 50);
+        this.myPanel.add(this.bannerLabel);
+
+        this.panelDesc = new JPanel();
+        this.panelDesc.setLayout(null);
+        this.panelDesc.setBounds(0, 50, 500, 100);
+        this.panelDesc.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        this.myPanel.add(this.panelDesc);
+
         this.versionLabel = new JLabel();
         this.versionLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.versionLabel.setBounds(0, 0, 500, 50);
-        this.myPanel.add(this.versionLabel);
+        this.versionLabel.setBounds(5, 0, 500, 50);
+        this.panelDesc.add(this.versionLabel);
 
         this.currentPortNameLabel = new JLabel();
         this.currentPortNameLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.currentPortNameLabel.setBounds(0, 50, 500, 50);
-        this.myPanel.add(this.currentPortNameLabel);
+        this.currentPortNameLabel.setBounds(5, 50, 500, 50);
+        this.panelDesc.add(this.currentPortNameLabel);
 
+        this.panelOptions = new JPanel();
+        this.panelOptions.setLayout(null);
+        this.panelOptions.setBounds(0, 150, 500, 150);
+        this.panelOptions.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        this.myPanel.add(this.panelOptions);
 
         this.modeCheckBox = new JComboBox<Mode>();
         this.modeCheckBox.addItem(Mode.LOGIN);
         this.modeCheckBox.addItem(Mode.SHOW);
-        this.modeCheckBox.setBounds(0, 150, 100, 30);
-        this.myPanel.add(this.modeCheckBox);
+        this.modeCheckBox.setBounds(5, 10, 100, 30);
+        this.panelOptions.add(this.modeCheckBox);
 
         this.envCheckBox = new JComboBox<Env>();
         this.envCheckBox.addItem(Env.TEST);
         this.envCheckBox.addItem(Env.PROD);
-        this.envCheckBox.setBounds(0, 200, 100, 30);
-        this.myPanel.add(this.envCheckBox);
+        this.envCheckBox.setBounds(5, 50, 100, 30);
+        this.panelOptions.add(this.envCheckBox);
 
         this.addressField = new JTextField();
         this.addressField.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         this.addressField.setEditable(false);
-        this.addressField.setBounds(0, 250, 500, 30);
-        this.myPanel.add(this.addressField);
+        this.addressField.setBounds(5, 90, 490, 30);
+        this.panelOptions.add(this.addressField);
+
+        this.logAreaLabel = new JLabel("Log area:");
+        this.logAreaLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.logAreaLabel.setBounds(5, 120, 500, 30);
+        this.panelOptions.add(this.logAreaLabel);
 
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.logArea.setEditable(false);
         this.logArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        this.logArea.setBounds(0, 300, 500, 200);
-        this.myPanel.add(this.logArea);
+        this.logArea.setEditable(false);
+
+        this.scrollPane = new JScrollPane(this.logArea);
+        this.scrollPane.setBounds(0, 300, 500, 200);
+        this.myPanel.add(this.scrollPane);
 
         this.modeCheckBox.addActionListener(e -> this.uiRfidListener.modeChangedListener((Mode) this.modeCheckBox.getSelectedItem()));
         this.envCheckBox.addActionListener(e -> this.uiRfidListener.envChangedListener((Env) this.envCheckBox.getSelectedItem()));
