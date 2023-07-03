@@ -27,7 +27,7 @@ public class UIRfid extends JFrame {
     private JTextArea logArea;
 
     private UIRfidListener uiRfidListener;
-    private JPanel panelDesc, panelOptions;
+    private JPanel panelDesc, panelOptions, panelLog;
     private JScrollPane scrollPane;
     private final ImageIcon ICON = new ImageIcon(UIRfid.class.getResource("/icon_reader.png"));
 
@@ -74,7 +74,7 @@ public class UIRfid extends JFrame {
 
         this.panelOptions = new JPanel();
         this.panelOptions.setLayout(null);
-        this.panelOptions.setBounds(0, 150, 500, 150);
+        this.panelOptions.setBounds(0, 150, 500, 130);
         this.panelOptions.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         this.myPanel.add(this.panelOptions);
 
@@ -96,10 +96,16 @@ public class UIRfid extends JFrame {
         this.addressField.setBounds(5, 90, 490, 30);
         this.panelOptions.add(this.addressField);
 
+        this.panelLog = new JPanel();
+        this.panelLog.setLayout(null);
+        this.panelLog.setBounds(0, 280, 500, 220);
+        this.panelLog.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        this.myPanel.add(this.panelLog);
+
         this.logAreaLabel = new JLabel("Log area:");
         this.logAreaLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.logAreaLabel.setBounds(5, 120, 500, 30);
-        this.panelOptions.add(this.logAreaLabel);
+        this.logAreaLabel.setBounds(5, 0, 500, 30);
+        this.panelLog.add(this.logAreaLabel);
 
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
@@ -107,8 +113,8 @@ public class UIRfid extends JFrame {
         this.logArea.setEditable(false);
 
         this.scrollPane = new JScrollPane(this.logArea);
-        this.scrollPane.setBounds(0, 300, 500, 200);
-        this.myPanel.add(this.scrollPane);
+        this.scrollPane.setBounds(0, 30, 500, 190);
+        this.panelLog.add(this.scrollPane);
 
         this.modeCheckBox.addActionListener(e -> this.uiRfidListener.modeChangedListener((Mode) this.modeCheckBox.getSelectedItem()));
         this.envCheckBox.addActionListener(e -> this.uiRfidListener.envChangedListener((Env) this.envCheckBox.getSelectedItem()));
