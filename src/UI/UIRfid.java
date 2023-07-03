@@ -1,5 +1,6 @@
 package UI;
 
+import com.fazecast.jSerialComm.SerialPort;
 import mainCode.Env;
 import mainCode.Mode;
 import mainCode.UIRfidListener;
@@ -21,6 +22,8 @@ public class UIRfid extends JFrame {
     private JComboBox<Mode> modeCheckBox;
 
     private JComboBox<Env> envCheckBox;
+
+    private JComboBox<SerialPort> serialPortCheckBox;
 
     private JTextField addressField;
 
@@ -74,31 +77,35 @@ public class UIRfid extends JFrame {
 
         this.panelOptions = new JPanel();
         this.panelOptions.setLayout(null);
-        this.panelOptions.setBounds(0, 150, 500, 130);
+        this.panelOptions.setBounds(0, 150, 500, 170);
         this.panelOptions.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         this.myPanel.add(this.panelOptions);
+
+        this.serialPortCheckBox = new JComboBox<SerialPort>();
+        this.serialPortCheckBox.setBounds(5, 10, 100, 30);
+        this.panelOptions.add(this.serialPortCheckBox);
 
         this.modeCheckBox = new JComboBox<Mode>();
         this.modeCheckBox.addItem(Mode.LOGIN);
         this.modeCheckBox.addItem(Mode.SHOW);
-        this.modeCheckBox.setBounds(5, 10, 100, 30);
+        this.modeCheckBox.setBounds(5, 50, 100, 30);
         this.panelOptions.add(this.modeCheckBox);
 
         this.envCheckBox = new JComboBox<Env>();
         this.envCheckBox.addItem(Env.TEST);
         this.envCheckBox.addItem(Env.PROD);
-        this.envCheckBox.setBounds(5, 50, 100, 30);
+        this.envCheckBox.setBounds(5, 90, 100, 30);
         this.panelOptions.add(this.envCheckBox);
 
         this.addressField = new JTextField();
         this.addressField.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         this.addressField.setEditable(false);
-        this.addressField.setBounds(5, 90, 490, 30);
+        this.addressField.setBounds(5, 130, 490, 30);
         this.panelOptions.add(this.addressField);
 
         this.panelLog = new JPanel();
         this.panelLog.setLayout(null);
-        this.panelLog.setBounds(0, 280, 500, 220);
+        this.panelLog.setBounds(0, 320, 500, 220);
         this.panelLog.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         this.myPanel.add(this.panelLog);
 
@@ -118,6 +125,7 @@ public class UIRfid extends JFrame {
 
         this.modeCheckBox.addActionListener(e -> this.uiRfidListener.modeChangedListener((Mode) this.modeCheckBox.getSelectedItem()));
         this.envCheckBox.addActionListener(e -> this.uiRfidListener.envChangedListener((Env) this.envCheckBox.getSelectedItem()));
+        this.serialPortCheckBox.addActionListener(e -> this.uiRfidListener.serialPortChangedListener((SerialPort) this.serialPortCheckBox.getSelectedItem()));
 
 
         this.pack();
@@ -146,6 +154,16 @@ public class UIRfid extends JFrame {
 
     public void setCurrentMode(Mode mode){
         this.modeCheckBox.setSelectedItem(mode);
+    }
+
+    public void setAllSerialPorts(SerialPort[] serialPortList){
+        for (SerialPort s : serialPortList){
+            this.serialPortCheckBox.addItem(s);
+        }
+    }
+
+    public SerialPort getSelectedSerialPort(){
+        return ((SerialPort) this.serialPortCheckBox.getSelectedItem());
     }
 
     public void showId(String id){

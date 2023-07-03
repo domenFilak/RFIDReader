@@ -29,78 +29,84 @@ public class Main {
 
 
     public static void main(String[] args){
-
-        Main.setSerialPort();
-
-        if (Main.serialPort != null){
-            startUIRfid();
-
-        }
-        else {
-            System.out.println("Port not available!");
-        }
-
+        setSerialPort();
+        startUIRfid();
     }
 
-    public static String getReaderNameWithoutCom(String nameWithCom){
-        return nameWithCom.substring(0, nameWithCom.length() - 7);
+    public static String getReaderNameWithoutCom(SerialPort serialPort){
+        return ((Main.serialPort != null) ? Main.serialPort.getDescriptivePortName().substring(0, Main.serialPort.getDescriptivePortName().length() - 7) : "/");
+    }
+
+    public static SerialPort[] getSerialPortsList(){
+        return SerialPort.getCommPorts();
     }
 
     public static void setSerialPort(){
-        SerialPort[] serialPortList = SerialPort.getCommPorts();
-
-        for (SerialPort s : serialPortList){
-            if (getReaderNameWithoutCom(s.getDescriptivePortName()).equals(Main.COM_PORT_READER_NAME)){
-                Main.serialPort = s;
-            }
+        if (getSerialPortsList().length > 0){
+            Main.serialPort = getSerialPortsList()[0];
         }
-
+        else {
+            Main.serialPort = null;
+        }
     }
 
     public static void startUIRfid(){
+
         initUIRfid();
 
-        Main.serialPort.openPort();
-        System.out.println("Port initialized!");
+        readData();
 
-        Main.serialPort.addDataListener(new SerialPortDataListener() {
-            @Override
-            public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
-            @Override
-            public void serialEvent(SerialPortEvent event) {
-                if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
-                    return;
-                byte[] newData = new byte[Main.serialPort.bytesAvailable()];
-                int numRead = Main.serialPort.readBytes(newData, newData.length);
-                char[] hexChars = new char[0];
-                String ascii = "";
+    }
 
-                String command = fromByteToHex(newData, hexChars);
+    public static void readData(){
 
-                String id;
-                if (!command.equals("1B")){
-                    id = onlyIdData(command);
-                    Main.id = fromHexToAscii(id, ascii);
-                    String urlLink = "";
-                    if (Main.mode == Mode.LOGIN){
-                        try {
-                            openLink(urlLink);
-                        } catch (OpenLinkException e) {
-                            throw new RuntimeException(e);
+        if (Main.serialPort != null){
+            Main.serialPort.openPort();
+            System.out.println("Port initialized!");
+
+            Main.serialPort.addDataListener(new SerialPortDataListener() {
+
+                @Override
+                public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
+                @Override
+                public void serialEvent(SerialPortEvent event) {
+                    if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                        return;
+                    byte[] newData = new byte[Main.serialPort.bytesAvailable()];
+                    int numRead = Main.serialPort.readBytes(newData, newData.length);
+                    char[] hexChars = new char[0];
+                    String ascii = "";
+
+                    String command = fromByteToHex(newData, hexChars);
+
+                    String id;
+                    if (!command.equals("1B")){
+                        id = onlyIdData(command);
+                        Main.id = fromHexToAscii(id, ascii);
+                        String urlLink = "";
+                        if (Main.mode == Mode.LOGIN){
+                            try {
+                                openLink(urlLink);
+                            } catch (OpenLinkException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
+                        else if (Main.mode == Mode.SHOW){
+                            Main.uiRfid.showId(Main.id);
+                        }
+                        urlLink = null;
                     }
-                    else if (Main.mode == Mode.SHOW){
-                        Main.uiRfid.showId(Main.id);
-                    }
-                    urlLink = null;
+                    newData = null;
+                    hexChars = null;
+                    ascii = null;
+                    command = null;
+                    id = null;
                 }
-                newData = null;
-                hexChars = null;
-                ascii = null;
-                command = null;
-                id = null;
-            }
-        });
+            });
+        }
+        else {
+            System.out.println("Port not initialized!");
+        }
     }
 
     public static void initUIRfid(){
@@ -125,11 +131,20 @@ public class Main {
                         break;
                 }
             }
+            @Override
+            public void serialPortChangedListener(SerialPort serialPort){
+                Main.serialPort.closePort();
+                Main.serialPort = serialPort;
+                readData();
+                Main.uiRfid.setCurrentPortName(getReaderNameWithoutCom(Main.serialPort));
+
+            }
 
         });
+        Main.uiRfid.setAllSerialPorts(getSerialPortsList());
         Main.uiRfid.setVersion(Main.VERSION);
         Main.uiRfid.setCurrentAddress(Main.url);
-        Main.uiRfid.setCurrentPortName(getReaderNameWithoutCom(Main.serialPort.getDescriptivePortName()));
+        Main.uiRfid.setCurrentPortName(getReaderNameWithoutCom(Main.serialPort));
         Main.uiRfid.setCurrentMode(Main.mode);
     }
 

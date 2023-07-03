@@ -7,7 +7,7 @@ public class MyPanel extends JPanel {
 
     public MyPanel(){
 
-        this.setPreferredSize(new Dimension(500, 500));
+        this.setPreferredSize(new Dimension(500, 540));
         this.setLayout(null);
 
     }
