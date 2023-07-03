@@ -26,9 +26,10 @@ public class Main {
     private static Mode mode;
     private static String url;
     private static String id;
-
+    private static boolean isConnected = false;
 
     public static void main(String[] args){
+
         setSerialPort();
         startUIRfid();
     }
@@ -53,16 +54,14 @@ public class Main {
     public static void startUIRfid(){
 
         initUIRfid();
-
         readData();
-
     }
 
     public static void readData(){
 
         if (Main.serialPort != null){
             Main.serialPort.openPort();
-            System.out.println("Port initialized!");
+            Main.uiRfid.setTextOnConnection(true);
 
             Main.serialPort.addDataListener(new SerialPortDataListener() {
 
@@ -105,11 +104,12 @@ public class Main {
             });
         }
         else {
-            System.out.println("Port not initialized!");
+            Main.uiRfid.setTextOnConnection(false);
         }
     }
 
     public static void initUIRfid(){
+
         Main.uiRfid = new UIRfid(new UIRfidListener() {
             @Override
             public void modeChangedListener(Mode mode) {
@@ -137,7 +137,6 @@ public class Main {
                 Main.serialPort = serialPort;
                 readData();
                 Main.uiRfid.setCurrentPortName(getReaderNameWithoutCom(Main.serialPort));
-
             }
 
         });

@@ -10,9 +10,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
-public class UIRfid extends JFrame {
+public class UIRfid extends JFrame implements ActionListener {
 
     private MyPanel myPanel;
     private final String[] OPTIONS = {"Yes", "No"};
@@ -32,7 +35,11 @@ public class UIRfid extends JFrame {
     private UIRfidListener uiRfidListener;
     private JPanel panelDesc, panelOptions, panelLog;
     private JScrollPane scrollPane;
+    private JButton clearButton;
     private final ImageIcon ICON = new ImageIcon(UIRfid.class.getResource("/icon_reader.png"));
+
+    private Date currentDate;
+    private SimpleDateFormat dateFormat;
 
     public UIRfid(UIRfidListener uiRfidListener){
         this.uiRfidListener = uiRfidListener;
@@ -111,8 +118,16 @@ public class UIRfid extends JFrame {
 
         this.logAreaLabel = new JLabel("Log area:");
         this.logAreaLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.logAreaLabel.setBounds(5, 0, 500, 30);
+        this.logAreaLabel.setBounds(5, 0, 250, 30);
         this.panelLog.add(this.logAreaLabel);
+
+        this.clearButton = new JButton("Clear");
+        this.clearButton.addActionListener(this);
+        this.clearButton.setActionCommand("clearButton");
+        this.clearButton.setFocusable(false);
+        this.clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.clearButton.setBounds(425, 0, 70, 30);
+        this.panelLog.add(this.clearButton);
 
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
@@ -132,6 +147,20 @@ public class UIRfid extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String actionCommand = ((JButton) e.getSource()).getActionCommand();
+
+        switch (actionCommand) {
+            case "clearButton":
+                this.logArea.setText("");
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public void onExit(){
         int res = JOptionPane.showOptionDialog(this, "Do you really want to exit?", "RFIDReader", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, OPTIONS, OPTIONS[1]);
@@ -167,7 +196,32 @@ public class UIRfid extends JFrame {
     }
 
     public void showId(String id){
-        this.logArea.setText(this.logArea.getText() + "\n" + ("Current Id: " + id));
+        String time = "";
+        this.logArea.setText(this.logArea.getText() + "\n" + (formatTime(time) + "Current Id: " + id));
+        time = null;
+    }
+
+    public void setTextOnConnection(boolean initialized){
+        String time = "";
+        if (initialized){
+            this.logArea.setText(formatTime(time) + "Connection initialized!");
+        }
+        else {
+            this.logArea.setText(formatTime(time) + "Connection not initialized!");
+        }
+        time = null;
+    }
+
+    public String formatTime(String timeInString){
+        timeInString = "";
+        this.currentDate = new Date();
+        this.dateFormat = new SimpleDateFormat("HH:mm:ss");
+        timeInString += this.dateFormat.format(this.currentDate) + " | ";
+        this.currentDate = null;
+        this.dateFormat = null;
+
+        return timeInString;
+
     }
 
 
