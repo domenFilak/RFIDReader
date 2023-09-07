@@ -36,6 +36,8 @@ public class UIRfid extends JFrame implements ActionListener {
     private JPanel panelDesc, panelOptions, panelLog;
     private JScrollPane scrollPane;
     private JButton clearButton;
+    private JButton alarmButton;
+
     private JButton soundButton;
     private final ImageIcon ICON = new ImageIcon(UIRfid.class.getResource("/icon_reader.png"));
 
@@ -138,6 +140,14 @@ public class UIRfid extends JFrame implements ActionListener {
         this.soundButton.setBounds(325, 0, 70, 30);
         this.panelLog.add(this.soundButton);
 
+        this.alarmButton = new JButton("Alarm");
+        this.alarmButton.addActionListener(this);
+        this.alarmButton.setActionCommand("alarmButton");
+        this.alarmButton.setFocusable(false);
+        this.alarmButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        this.alarmButton.setBounds(225, 0, 70, 30);
+        this.panelLog.add(this.alarmButton);
+
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         this.logArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -166,15 +176,26 @@ public class UIRfid extends JFrame implements ActionListener {
                 this.logArea.setText("");
                 break;
             case "soundButton":
-                makeSound();
+                makeSound("sound");
+                break;
+            case "alarmButton":
+                makeSound("alarm");
                 break;
             default:
                 break;
         }
     }
 
-    public void makeSound(){
-        ((SerialPort) this.serialPortCheckBox.getSelectedItem()).writeBytes("A".getBytes(), "A".getBytes().length);
+    public void makeSound(String type){
+        byte[] soundCommand = new byte[]{0x42};
+        byte[] alarmCommand = new byte[]{0x41};
+        if (type.equals("alarm")) {
+            ((SerialPort) this.serialPortCheckBox.getSelectedItem()).writeBytes(alarmCommand, 1);
+        }
+        else {
+            ((SerialPort) this.serialPortCheckBox.getSelectedItem()).writeBytes(soundCommand, 1);
+        }
+
     }
 
 
