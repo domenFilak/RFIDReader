@@ -36,6 +36,7 @@ public class UIRfid extends JFrame implements ActionListener {
     private JPanel panelDesc, panelOptions, panelLog;
     private JScrollPane scrollPane;
     private JButton clearButton;
+    private JButton soundButton;
     private final ImageIcon ICON = new ImageIcon(UIRfid.class.getResource("/icon_reader.png"));
 
     private Date currentDate;
@@ -129,6 +130,14 @@ public class UIRfid extends JFrame implements ActionListener {
         this.clearButton.setBounds(425, 0, 70, 30);
         this.panelLog.add(this.clearButton);
 
+        this.soundButton = new JButton("Sound");
+        this.soundButton.addActionListener(this);
+        this.soundButton.setActionCommand("soundButton");
+        this.soundButton.setFocusable(false);
+        this.soundButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        this.soundButton.setBounds(325, 0, 70, 30);
+        this.panelLog.add(this.soundButton);
+
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         this.logArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -156,9 +165,16 @@ public class UIRfid extends JFrame implements ActionListener {
             case "clearButton":
                 this.logArea.setText("");
                 break;
+            case "soundButton":
+                makeSound();
+                break;
             default:
                 break;
         }
+    }
+
+    public void makeSound(){
+        ((SerialPort) this.serialPortCheckBox.getSelectedItem()).writeBytes("A".getBytes(), "A".getBytes().length);
     }
 
 
