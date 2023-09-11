@@ -20,7 +20,7 @@ public class UIRfid extends JFrame implements ActionListener {
     private MyPanel myPanel;
     private final String[] OPTIONS = {"Yes", "No"};
 
-    private JLabel versionLabel, currentPortNameLabel, bannerLabel, logAreaLabel;
+    private JLabel versionLabel, currentPortNameLabel, bannerLabel, logAreaLabel, addOptLabel;
 
     private JComboBox<Mode> modeCheckBox;
 
@@ -33,7 +33,7 @@ public class UIRfid extends JFrame implements ActionListener {
     private JTextArea logArea;
 
     private UIRfidListener uiRfidListener;
-    private JPanel panelDesc, panelOptions, panelLog;
+    private JPanel panelDesc, panelOptions, panelLog, panelAddOptions;
     private JScrollPane scrollPane;
     private JButton clearButton;
     private JButton alarmButton;
@@ -113,9 +113,36 @@ public class UIRfid extends JFrame implements ActionListener {
         this.addressField.setBounds(5, 130, 490, 30);
         this.panelOptions.add(this.addressField);
 
+        this.panelAddOptions = new JPanel();
+        this.panelAddOptions.setLayout(null);
+        this.panelAddOptions.setBounds(0, 320, 500, 90);
+        this.panelAddOptions.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        this.myPanel.add(this.panelAddOptions);
+
+        this.addOptLabel = new JLabel("Additional options:");
+        this.addOptLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.addOptLabel.setBounds(5, 5, 250, 30);
+        this.panelAddOptions.add(this.addOptLabel);
+
+        this.soundButton = new JButton("Sound");
+        this.soundButton.addActionListener(this);
+        this.soundButton.setActionCommand("soundButton");
+        this.soundButton.setFocusable(false);
+        this.soundButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        this.soundButton.setBounds(5, 50, 70, 30);
+        this.panelAddOptions.add(this.soundButton);
+
+        this.alarmButton = new JButton("Alarm");
+        this.alarmButton.addActionListener(this);
+        this.alarmButton.setActionCommand("alarmButton");
+        this.alarmButton.setFocusable(false);
+        this.alarmButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        this.alarmButton.setBounds(85, 50, 70, 30);
+        this.panelAddOptions.add(this.alarmButton);
+
         this.panelLog = new JPanel();
         this.panelLog.setLayout(null);
-        this.panelLog.setBounds(0, 320, 500, 220);
+        this.panelLog.setBounds(0, 410, 500, 220);
         this.panelLog.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         this.myPanel.add(this.panelLog);
 
@@ -128,25 +155,9 @@ public class UIRfid extends JFrame implements ActionListener {
         this.clearButton.addActionListener(this);
         this.clearButton.setActionCommand("clearButton");
         this.clearButton.setFocusable(false);
-        this.clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
         this.clearButton.setBounds(425, 0, 70, 30);
         this.panelLog.add(this.clearButton);
-
-        this.soundButton = new JButton("Sound");
-        this.soundButton.addActionListener(this);
-        this.soundButton.setActionCommand("soundButton");
-        this.soundButton.setFocusable(false);
-        this.soundButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        this.soundButton.setBounds(325, 0, 70, 30);
-        this.panelLog.add(this.soundButton);
-
-        this.alarmButton = new JButton("Alarm");
-        this.alarmButton.addActionListener(this);
-        this.alarmButton.setActionCommand("alarmButton");
-        this.alarmButton.setFocusable(false);
-        this.alarmButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        this.alarmButton.setBounds(225, 0, 70, 30);
-        this.panelLog.add(this.alarmButton);
 
         this.logArea = new JTextArea();
         this.logArea.setFont(new Font("Comic Sans MS", Font.BOLD, 15));

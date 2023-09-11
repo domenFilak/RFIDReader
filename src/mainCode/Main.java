@@ -91,7 +91,13 @@ public class Main {
                             }
                         }
                         else if (Main.mode == Mode.SHOW){
-                            Main.uiRfid.showId(Main.id);
+                            if (Main.id.equals("0113914EBD")){
+                                alarmSound();
+                            }
+                            else {
+                                Main.uiRfid.showId(Main.id);
+                            }
+
                         }
                         urlLink = null;
                     }
@@ -145,6 +151,13 @@ public class Main {
         Main.uiRfid.setCurrentAddress(Main.url);
         Main.uiRfid.setCurrentPortName(getReaderNameWithoutCom(Main.serialPort));
         Main.uiRfid.setCurrentMode(Main.mode);
+    }
+
+    public static void alarmSound(){
+        byte[] alarmCommand = new byte[]{0x41};
+
+        Main.serialPort.writeBytes(alarmCommand, 1);
+
     }
 
     public static String fromByteToHex(byte[] bytes, char[] data) {
