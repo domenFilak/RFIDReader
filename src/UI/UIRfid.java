@@ -249,6 +249,12 @@ public class UIRfid extends JFrame implements ActionListener {
         time = null;
     }
 
+    public void showIdBlocked(){
+        String time = "";
+        this.logArea.setText(this.logArea.getText() + "\n" + (formatTime(time) + "Current card is blocked!"));
+        time = null;
+    }
+
     public void setTextOnConnection(boolean initialized){
         String time = "";
         if (initialized){
