@@ -20,7 +20,7 @@ public class UIRfid extends JFrame implements ActionListener {
     private MyPanel myPanel;
     private final String[] OPTIONS = {"Yes", "No"};
 
-    private JLabel versionLabel, currentPortNameLabel, bannerLabel, logAreaLabel, addOptLabel;
+    private JLabel versionLabel, versionLabelDesc, currentPortNameLabel, currentPortNameLabelDesc, bannerLabel, logAreaLabel, addOptLabel;
 
     private JComboBox<Mode> modeCheckBox;
 
@@ -28,7 +28,7 @@ public class UIRfid extends JFrame implements ActionListener {
 
     private JComboBox<SerialPort> serialPortCheckBox;
 
-    private JTextField addressField;
+    private JTextField addressField, addressFieldTarget;
 
     private JTextArea logArea;
 
@@ -65,7 +65,7 @@ public class UIRfid extends JFrame implements ActionListener {
         this.bannerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
         this.bannerLabel.setBackground(new Color(51, 255, 153));
         this.bannerLabel.setOpaque(true);
-        this.bannerLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        this.bannerLabel.setBorder(BorderFactory.createLineBorder(Color.black));
         this.bannerLabel.setBounds(0, 0, 500, 50);
         this.myPanel.add(this.bannerLabel);
 
@@ -75,14 +75,26 @@ public class UIRfid extends JFrame implements ActionListener {
         this.panelDesc.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         this.myPanel.add(this.panelDesc);
 
+        this.versionLabelDesc = new JLabel("Version: ");
+        this.versionLabelDesc.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.versionLabelDesc.setBounds(5, 0, 70, 50);
+        this.panelDesc.add(this.versionLabelDesc);
+
         this.versionLabel = new JLabel();
-        this.versionLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.versionLabel.setBounds(5, 0, 500, 50);
+        this.versionLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+        this.versionLabel.setBounds(75, 0, 425, 50);
+        this.versionLabel.setHorizontalAlignment(SwingConstants.LEFT);
         this.panelDesc.add(this.versionLabel);
 
+        this.currentPortNameLabelDesc = new JLabel("Current port name: ");
+        this.currentPortNameLabelDesc.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.currentPortNameLabelDesc.setBounds(5, 50, 150, 50);
+        this.currentPortNameLabelDesc.setHorizontalAlignment(SwingConstants.LEFT);
+        this.panelDesc.add(this.currentPortNameLabelDesc);
+
         this.currentPortNameLabel = new JLabel();
-        this.currentPortNameLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-        this.currentPortNameLabel.setBounds(5, 50, 500, 50);
+        this.currentPortNameLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+        this.currentPortNameLabel.setBounds(155, 50, 345, 50);
         this.panelDesc.add(this.currentPortNameLabel);
 
         this.panelOptions = new JPanel();
@@ -92,25 +104,33 @@ public class UIRfid extends JFrame implements ActionListener {
         this.myPanel.add(this.panelOptions);
 
         this.serialPortCheckBox = new JComboBox<SerialPort>();
-        this.serialPortCheckBox.setBounds(5, 10, 100, 30);
+        this.serialPortCheckBox.setBounds(5, 10, 200, 30);
         this.panelOptions.add(this.serialPortCheckBox);
 
         this.modeCheckBox = new JComboBox<Mode>();
         this.modeCheckBox.addItem(Mode.LOGIN);
         this.modeCheckBox.addItem(Mode.SHOW);
-        this.modeCheckBox.setBounds(5, 50, 100, 30);
+        this.modeCheckBox.setBounds(5, 50, 200, 30);
         this.panelOptions.add(this.modeCheckBox);
 
         this.envCheckBox = new JComboBox<Env>();
         this.envCheckBox.addItem(Env.TEST);
         this.envCheckBox.addItem(Env.PROD);
-        this.envCheckBox.setBounds(5, 90, 100, 30);
+        this.envCheckBox.setBounds(5, 90, 200, 30);
         this.panelOptions.add(this.envCheckBox);
 
+        this.addressFieldTarget = new JTextField("Destination address: ");
+        this.addressFieldTarget.setFont(new Font(Font.SERIF, Font.BOLD,  15));
+        this.addressFieldTarget.setEditable(false);
+        this.addressFieldTarget.setBounds(5, 130, 150, 30);
+        this.addressFieldTarget.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        this.panelOptions.add(this.addressFieldTarget);
+
         this.addressField = new JTextField();
-        this.addressField.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+        this.addressField.setFont(new Font(Font.SERIF, Font.PLAIN,  15));
         this.addressField.setEditable(false);
-        this.addressField.setBounds(5, 130, 490, 30);
+        this.addressField.setBounds(155, 130, 340, 30);
+        this.addressField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         this.panelOptions.add(this.addressField);
 
         this.panelAddOptions = new JPanel();
@@ -218,7 +238,7 @@ public class UIRfid extends JFrame implements ActionListener {
     }
 
     public void setVersion(String version){
-        this.versionLabel.setText((version != null) ? ("VERSION: " + version) : ("/"));
+        this.versionLabel.setText((version != null) ? (version) : ("/"));
     }
 
     public void setCurrentAddress(String address){
@@ -226,7 +246,7 @@ public class UIRfid extends JFrame implements ActionListener {
     }
 
     public void setCurrentPortName(String portName){
-        this.currentPortNameLabel.setText((portName != null) ? ("CURRENT PORT NAME: " + portName) : ("/"));
+        this.currentPortNameLabel.setText((portName != null) ? (portName) : ("/"));
     }
 
     public void setCurrentMode(Mode mode){

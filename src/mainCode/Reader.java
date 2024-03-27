@@ -18,7 +18,7 @@ public class Reader {
 
     private final String PROD_URL = "https://www.google.com/";
 
-    private final String TEST_URL = "localhost:8081/test/";
+    private final String TEST_URL = "http://localhost:8081/wms/update/";
     private final String COM_PORT_READER_NAME = "USB-SERIAL CH340";
     private SerialPort serialPort = null;
     private final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
