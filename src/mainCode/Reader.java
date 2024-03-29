@@ -91,6 +91,7 @@ public class Reader {
                         idFormat = onlyIdData(command);
                         id = fromHexToAscii(idFormat, ascii);
                         String urlLink = "";
+
                         if (mode == Mode.LOGIN){
                             try {
                                 openLink(urlLink);
@@ -101,7 +102,7 @@ public class Reader {
                         else if (mode == Mode.SHOW){
                             if (id.equals("0113914EBD")){
                                 alarmSound();
-                                uiRfid.showIdBlocked();
+                                uiRfid.showId(id);
                             }
                             else {
                                 uiRfid.showId(id);

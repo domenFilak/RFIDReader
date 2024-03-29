@@ -208,6 +208,7 @@ public class UIRfid extends JFrame implements ActionListener {
                 break;
             case "soundButton":
                 makeSound("sound");
+                //getReaderName(); //only added for test - to get the name of reader using byte command
                 break;
             case "alarmButton":
                 makeSound("alarm");
@@ -215,6 +216,11 @@ public class UIRfid extends JFrame implements ActionListener {
             default:
                 break;
         }
+    }
+
+    public void getReaderName(){
+        byte[] getNameCommand = new byte[]{0x4E};
+        ((SerialPort) this.serialPortCheckBox.getSelectedItem()).writeBytes(getNameCommand, 1);
     }
 
     public void makeSound(String type){
